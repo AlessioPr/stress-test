@@ -1,0 +1,33 @@
+version: '3'
+services:
+  app:
+    restart: always
+    container_name: app-my
+    build: ./app
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    expose:
+      - "8080"
+    command: mvn clean install spring-boot:run
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb-my
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=mongo
+      - SPRING_DATA_MONGODB_PASSWORD=my-password
+      - SPRING_DATA_MONGODB_USERNAME=my-username
+      - SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE=admin
+      - SPRING_ELASTICSEARCH_URIS=http://127.0.0.1:9200
+
+  mongodb:
+    container_name: mongodb-my
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=my-username
+      - MONGO_INITDB_ROOT_PASSWORD=my-password
+    volumes:
+      - ./data:/data/db
+    links:
+      - app
